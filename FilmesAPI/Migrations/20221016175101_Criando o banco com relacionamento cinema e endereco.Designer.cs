@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FilmesApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220911000857_LevantandoBanco")]
-    partial class LevantandoBanco
+    [Migration("20221016175101_Criando o banco com relacionamento cinema e endereco")]
+    partial class Criandoobancocomrelacionamentocinemaeendereco
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,10 +24,7 @@ namespace FilmesApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("EnderecoFK")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GerenteFK")
+                    b.Property<int>("EnderecoId")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
@@ -35,6 +32,9 @@ namespace FilmesApi.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
 
                     b.ToTable("Cinemas");
                 });
@@ -85,6 +85,22 @@ namespace FilmesApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Enderecos");
+                });
+
+            modelBuilder.Entity("FilmesAPI.Models.Cinema", b =>
+                {
+                    b.HasOne("FilmesApi.Models.Endereco", "Endereco")
+                        .WithOne("Cinema")
+                        .HasForeignKey("FilmesAPI.Models.Cinema", "EnderecoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Endereco");
+                });
+
+            modelBuilder.Entity("FilmesApi.Models.Endereco", b =>
+                {
+                    b.Navigation("Cinema");
                 });
 #pragma warning restore 612, 618
         }
